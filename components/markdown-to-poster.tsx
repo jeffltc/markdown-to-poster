@@ -16,6 +16,19 @@ import {
 } from './ui/dropdown-menu'
 import { toPng } from 'html-to-image'
 
+const gradientPresets = [
+  'from-violet-500 to-blue-500',
+  'from-orange-500 to-pink-500',
+  'from-cyan-400 to-blue-600',
+  'from-green-400 to-emerald-600',
+  'from-amber-300 to-orange-500',
+  'from-green-300 to-purple-400',
+  'from-pink-300 to-rose-400',
+  'from-indigo-400 to-purple-500',
+  'from-teal-300 to-blue-400',
+  'from-yellow-300 to-red-400'
+]
+
 export default function MarkdownPoster() {
   const [markdown, setMarkdown] = useState<string>(`# Markdown Poster
 
@@ -31,6 +44,7 @@ export default function MarkdownPoster() {
 4. 所见即所得
 5. 免费
 6. 支持使用API调用`)
+  const [gradient, setGradient] = useState(gradientPresets[0])
 
   const handleCopy = async () => {
     const preview = document.getElementById('preview')
@@ -75,6 +89,7 @@ export default function MarkdownPoster() {
             dropCursor: false,
             allowMultipleSelections: false,
             indentOnInput: false,
+            lineWrap: true,
           }}
           style={{ 
             fontSize: '16px',
@@ -86,23 +101,38 @@ export default function MarkdownPoster() {
       {/* Preview */}
       <div className="w-1/2 h-full bg-gray-50 p-4 relative">
         <div className="flex items-center gap-2 p-2 border-b">
-          <Button variant="ghost" size="icon">
-            <Palette className="h-4 w-4" />
-          </Button>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" size="icon">
+                <Palette className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="bg-white p-2 shadow-xl">
+              <div className="grid grid-cols-3 gap-2 w-[180px]">
+                {gradientPresets.map((preset) => (
+                  <button
+                    key={preset}
+                    onClick={() => setGradient(preset)}
+                    className={`w-14 h-14 rounded-lg bg-gradient-to-r ${preset} hover:scale-105 transition-transform`}
+                  />
+                ))}
+              </div>
+            </DropdownMenuContent>
+          </DropdownMenu>
           
           <div className="flex-1" />
           
-          <Button variant="ghost" size="icon">
+          <Button variant="ghost" size="icon" onClick={handleDownload}>
             <Download className="h-4 w-4" />
           </Button>
           
-          <Button variant="ghost" size="icon">
+          <Button variant="ghost" size="icon" onClick={handleCopy}>
             <Copy className="h-4 w-4" />
           </Button>
         </div>
         <div 
           id="preview"
-          className="w-full h-full overflow-auto rounded-lg bg-gradient-to-r from-violet-500 to-blue-500 p-8"
+          className={`w-full h-full overflow-auto rounded-lg bg-gradient-to-r ${gradient} p-8`}
         >
           <div className="bg-white rounded-3xl p-12 shadow-xl">
             <ReactMarkdown
