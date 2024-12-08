@@ -88,8 +88,7 @@ export default function MarkdownPoster() {
             foldGutter: false,
             dropCursor: false,
             allowMultipleSelections: false,
-            indentOnInput: false,
-            lineWrap: true,
+            indentOnInput: false
           }}
           style={{ 
             fontSize: '16px',
