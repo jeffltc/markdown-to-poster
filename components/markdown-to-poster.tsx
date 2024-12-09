@@ -29,22 +29,26 @@ const gradientPresets = [
   'from-yellow-300 to-red-400'
 ]
 
+const fontPresets = ['Inter', 'Roboto', 'Merriweather', 'Playfair Display']
+
 export default function MarkdownPoster() {
   const [markdown, setMarkdown] = useState<string>(`# Markdown Poster
 
-> Markdown Poster 是一个工具，可以让你用 Markdown 制作优雅的图文海报。✨
+> Markdown Poster is a tool that allows you to create elegant graphic posters using Markdown.✨
 
-![示例图片](https://picsum.photos/600/300)
+![Sample Image](https://picsum.photos/600/300)
 
-## 它的主要功能：
+## Its main features:
 
-1. 将Markdown 转化为 **图文海报**
-2. 可以**自定义**文本主题、背景、字体大小
-3. 可以复制图片到 剪贴板，或者 下载为PNG图片
-4. 所见即所得
-5. 免费
-6. 支持使用API调用`)
+1. Converts Markdown into **graphic posters**
+2. Allows **customization** of text themes, backgrounds, and font sizes
+3. Can copy images to the clipboard or download as PNG images
+4. WYSIWYG (What You See Is What You Get)
+5. Free
+6. Supports API calls`)
   const [gradient, setGradient] = useState(gradientPresets[0])
+  const [scale, setScale] = useState(1)
+  const [selectedFont, setSelectedFont] = useState(fontPresets[0])
 
   const handleCopy = async () => {
     const preview = document.getElementById('preview')
@@ -77,6 +81,11 @@ export default function MarkdownPoster() {
     <div className="h-screen flex">
       {/* Editor */}
       <div className="w-1/2 h-full p-8">
+        <div className="flex items-center gap-2 mb-4">
+          <Button variant="ghost" size="sm" onClick={() => setMarkdown(markdown + '\n![Image](url)')}>插入图片</Button>
+          <Button variant="ghost" size="sm" onClick={() => setMarkdown(markdown + '\n> Quote')}>插入引用</Button>
+          <Button variant="ghost" size="sm" onClick={() => setMarkdown(markdown + '\n# Title')}>插入标题</Button>
+        </div>
         <CodeMirror
           value={markdown}
           height="100vh"
@@ -100,6 +109,15 @@ export default function MarkdownPoster() {
       {/* Preview */}
       <div className="w-1/2 h-full bg-gray-50 p-4 relative">
         <div className="flex items-center gap-2 p-2 border-b">
+          <input 
+            type="range" 
+            min="0.5" 
+            max="2" 
+            step="0.1" 
+            value={scale} 
+            onChange={(e) => setScale(Number(e.target.value))} 
+            className="w-24"
+          />
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" size="icon">
@@ -125,7 +143,11 @@ export default function MarkdownPoster() {
             <Download className="h-4 w-4" />
           </Button>
           
-          <Button variant="ghost" size="icon" onClick={handleCopy}>
+          <Button 
+            aria-label="复制到剪贴板"
+            title="复制到剪贴板 (Ctrl+C)"
+            onClick={handleCopy}
+          >
             <Copy className="h-4 w-4" />
           </Button>
         </div>
@@ -146,7 +168,13 @@ export default function MarkdownPoster() {
                 prose-ul:my-6 prose-li:my-2"
               components={{
                 img: ({ node, ...props }) => (
-                  <img className="w-full h-auto rounded-2xl shadow-lg" {...props} alt={props.alt || ''} />
+                  <img 
+                    loading="lazy"
+                    decoding="async"
+                    className="w-full h-auto rounded-2xl shadow-lg" 
+                    {...props} 
+                    alt={props.alt || ''} 
+                  />
                 ),
                 blockquote: ({node, ...props}) => (
                   <div className="bg-gray-50 rounded-xl p-4 my-6">
