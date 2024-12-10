@@ -46,7 +46,6 @@ export default function MarkdownPoster() {
 4. WYSIWYG (What You See Is What You Get)
 5. Free`)
   const [gradient, setGradient] = useState(gradientPresets[0])
-  const [scale, setScale] = useState(1)
   const [selectedFont, setSelectedFont] = useState(fontPresets[0])
 
   const handleCopy = async () => {
@@ -108,15 +107,6 @@ export default function MarkdownPoster() {
       {/* Preview */}
       <div className="w-1/2 h-full bg-gray-50 p-4 relative">
         <div className="flex items-center gap-2 p-2 border-b">
-          <input 
-            type="range" 
-            min="0.5" 
-            max="2" 
-            step="0.1" 
-            value={scale} 
-            onChange={(e) => setScale(Number(e.target.value))} 
-            className="w-24"
-          />
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" size="icon">
