@@ -44,8 +44,7 @@ export default function MarkdownPoster() {
 2. Allows **customization** of text themes, backgrounds, and font sizes
 3. Can copy images to the clipboard or download as PNG images
 4. WYSIWYG (What You See Is What You Get)
-5. Free
-6. Supports API calls`)
+5. Free`)
   const [gradient, setGradient] = useState(gradientPresets[0])
   const [scale, setScale] = useState(1)
   const [selectedFont, setSelectedFont] = useState(fontPresets[0])
@@ -82,9 +81,9 @@ export default function MarkdownPoster() {
       {/* Editor */}
       <div className="w-1/2 h-full p-8">
         <div className="flex items-center gap-2 mb-4">
-          <Button variant="ghost" size="sm" onClick={() => setMarkdown(markdown + '\n![Image](url)')}>插入图片</Button>
-          <Button variant="ghost" size="sm" onClick={() => setMarkdown(markdown + '\n> Quote')}>插入引用</Button>
-          <Button variant="ghost" size="sm" onClick={() => setMarkdown(markdown + '\n# Title')}>插入标题</Button>
+          <Button variant="ghost" size="sm" onClick={() => setMarkdown(markdown + '\n![Image](url)')}>Insert Image</Button>
+          <Button variant="ghost" size="sm" onClick={() => setMarkdown(markdown + '\n> Quote')}>Insert Quote</Button>
+          <Button variant="ghost" size="sm" onClick={() => setMarkdown(markdown + '\n# Title')}>Insert Title</Button>
         </div>
         <CodeMirror
           value={markdown}
