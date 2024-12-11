@@ -35,10 +35,14 @@ export default function RootLayout({
         </Script>
       </head>
       <body className={inter.className}>
-        {children}
-        <footer className="fixed bottom-0 left-0 right-0 p-2 text-center text-sm text-gray-500 bg-white/80 backdrop-blur-sm">
-          Inspired by <a href="https://beeposter.com" target="_blank" rel="noopener noreferrer" className="underline hover:text-gray-700">beeposter.com</a>
-        </footer>
+        <div className="min-h-screen flex flex-col">
+          <main className="flex-1">
+            {children}
+          </main>
+          <footer className="p-2 text-center text-sm text-gray-500">
+            Inspired by <a href="https://beeposter.com" target="_blank" rel="noopener noreferrer" className="underline hover:text-gray-700">beeposter.com</a>
+          </footer>
+        </div>
       </body>
     </html>
   )

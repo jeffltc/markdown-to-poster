@@ -142,7 +142,7 @@ export default function MarkdownPoster() {
   }
 
   return (
-    <div className="h-screen flex">
+    <div className="min-h-screen flex">
       {/* Editor */}
       <div className="w-1/2 h-full p-8">
         <div className="flex items-center gap-2 mb-4">
@@ -153,7 +153,7 @@ export default function MarkdownPoster() {
         <Suspense fallback={<div>Loading editor...</div>}>
           <CodeMirror
             value={markdown}
-            height="100vh"
+            height="calc(100vh - 200px)"
             extensions={[markdownLang()]}
             onChange={(value) => setMarkdown(value)}
             className="h-full font-sans"
