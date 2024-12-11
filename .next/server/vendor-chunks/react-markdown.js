@@ -11,6 +11,16 @@ exports.id = "vendor-chunks/react-markdown";
 exports.ids = ["vendor-chunks/react-markdown"];
 exports.modules = {
 
+/***/ "(ssr)/./node_modules/react-markdown/index.js":
+/*!**********************************************!*\
+  !*** ./node_modules/react-markdown/index.js ***!
+  \**********************************************/
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"default\": () => (/* reexport safe */ _lib_index_js__WEBPACK_IMPORTED_MODULE_0__.Markdown),\n/* harmony export */   defaultUrlTransform: () => (/* reexport safe */ _lib_index_js__WEBPACK_IMPORTED_MODULE_0__.defaultUrlTransform)\n/* harmony export */ });\n/* harmony import */ var _lib_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./lib/index.js */ \"(ssr)/./node_modules/react-markdown/lib/index.js\");\n/**\n * @typedef {import('hast-util-to-jsx-runtime').ExtraProps} ExtraProps\n * @typedef {import('./lib/index.js').AllowElement} AllowElement\n * @typedef {import('./lib/index.js').Components} Components\n * @typedef {import('./lib/index.js').Options} Options\n * @typedef {import('./lib/index.js').UrlTransform} UrlTransform\n */\n\n\n//# sourceURL=[module]\n//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiKHNzcikvLi9ub2RlX21vZHVsZXMvcmVhY3QtbWFya2Rvd24vaW5kZXguanMiLCJtYXBwaW5ncyI6Ijs7Ozs7O0FBQUE7QUFDQSxhQUFhLCtDQUErQztBQUM1RCxhQUFhLHVDQUF1QztBQUNwRCxhQUFhLHFDQUFxQztBQUNsRCxhQUFhLGtDQUFrQztBQUMvQyxhQUFhLHVDQUF1QztBQUNwRDs7QUFFdUUiLCJzb3VyY2VzIjpbIndlYnBhY2s6Ly8vLi9ub2RlX21vZHVsZXMvcmVhY3QtbWFya2Rvd24vaW5kZXguanM/ZDJiNiJdLCJzb3VyY2VzQ29udGVudCI6WyIvKipcbiAqIEB0eXBlZGVmIHtpbXBvcnQoJ2hhc3QtdXRpbC10by1qc3gtcnVudGltZScpLkV4dHJhUHJvcHN9IEV4dHJhUHJvcHNcbiAqIEB0eXBlZGVmIHtpbXBvcnQoJy4vbGliL2luZGV4LmpzJykuQWxsb3dFbGVtZW50fSBBbGxvd0VsZW1lbnRcbiAqIEB0eXBlZGVmIHtpbXBvcnQoJy4vbGliL2luZGV4LmpzJykuQ29tcG9uZW50c30gQ29tcG9uZW50c1xuICogQHR5cGVkZWYge2ltcG9ydCgnLi9saWIvaW5kZXguanMnKS5PcHRpb25zfSBPcHRpb25zXG4gKiBAdHlwZWRlZiB7aW1wb3J0KCcuL2xpYi9pbmRleC5qcycpLlVybFRyYW5zZm9ybX0gVXJsVHJhbnNmb3JtXG4gKi9cblxuZXhwb3J0IHtNYXJrZG93biBhcyBkZWZhdWx0LCBkZWZhdWx0VXJsVHJhbnNmb3JtfSBmcm9tICcuL2xpYi9pbmRleC5qcydcbiJdLCJuYW1lcyI6W10sInNvdXJjZVJvb3QiOiIifQ==\n//# sourceURL=webpack-internal:///(ssr)/./node_modules/react-markdown/index.js\n");
+
+/***/ }),
+
 /***/ "(ssr)/./node_modules/react-markdown/lib/index.js":
 /*!**************************************************!*\
   !*** ./node_modules/react-markdown/lib/index.js ***!

@@ -1,13 +1,10 @@
 'use client'
 
-import React from 'react'
+import React, { useEffect, lazy, Suspense } from 'react'
 import { useState } from 'react'
-import ReactMarkdown from 'react-markdown'
 import { Download, Copy, Settings, Palette, LayoutGrid } from 'lucide-react'
 import { Button } from './ui/button'
-import CodeMirror from '@uiw/react-codemirror'
 import { markdown as markdownLang } from '@codemirror/lang-markdown'
-import { oneDark } from '@codemirror/theme-one-dark'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -47,6 +44,9 @@ const sizePresets = {
   }
 }
 
+const CodeMirror = lazy(() => import('@uiw/react-codemirror'))
+const ReactMarkdown = lazy(() => import('react-markdown'))
+
 export default function MarkdownPoster() {
   const [markdown, setMarkdown] = useState<string>(`# Markdown Poster
 
@@ -65,6 +65,26 @@ export default function MarkdownPoster() {
   const [size, setSize] = useState<keyof typeof sizePresets>('default')
   const [isCopying, setIsCopying] = useState(false)
   const [isDownloading, setIsDownloading] = useState(false)
+
+  useEffect(() => {
+    // 监控组件加载时间
+    const startTime = performance.now()
+    
+    return () => {
+      const endTime = performance.now()
+      console.log(`Component render time: ${endTime - startTime}ms`)
+    }
+  }, [])
+  
+  useEffect(() => {
+    // 监控资源加载
+    const resources = performance.getEntriesByType('resource')
+    resources.forEach(resource => {
+      if (resource.duration > 100) { // 只记录加载超过100ms的资源
+        console.log(`Slow resource: ${resource.name} - ${resource.duration}ms`)
+      }
+    })
+  }, [])
 
   const handleCopy = async () => {
     setIsCopying(true)
@@ -130,24 +150,22 @@ export default function MarkdownPoster() {
           <Button variant="ghost" size="sm" onClick={() => setMarkdown(markdown + '\n> Quote')}>Insert Quote</Button>
           <Button variant="ghost" size="sm" onClick={() => setMarkdown(markdown + '\n# Title')}>Insert Title</Button>
         </div>
-        <CodeMirror
-          value={markdown}
-          height="100vh"
-          extensions={[markdownLang()]}
-          onChange={(value) => setMarkdown(value)}
-          className="h-full font-sans"
-          basicSetup={{
-            lineNumbers: false,
-            foldGutter: false,
-            dropCursor: false,
-            allowMultipleSelections: false,
-            indentOnInput: false
-          }}
-          style={{ 
-            fontSize: '16px',
-            fontFamily: 'Inter, sans-serif'
-          }}
-        />
+        <Suspense fallback={<div>Loading editor...</div>}>
+          <CodeMirror
+            value={markdown}
+            height="100vh"
+            extensions={[markdownLang()]}
+            onChange={(value) => setMarkdown(value)}
+            className="h-full font-sans"
+            basicSetup={{
+              lineNumbers: false,
+              foldGutter: false,
+              dropCursor: false,
+              allowMultipleSelections: false,
+              indentOnInput: false
+            }}
+          />
+        </Suspense>
       </div>
 
       {/* Preview */}
@@ -247,18 +265,20 @@ export default function MarkdownPoster() {
           className={`w-full h-full overflow-auto rounded-lg bg-gradient-to-r ${gradient} p-8`}
         >
           <div className="bg-white rounded-3xl p-12 shadow-xl">
-            <ReactMarkdown
-              className={`prose max-w-none ${sizePresets[size].prose} ${sizePresets[size].spacing}
-                prose-headings:font-bold prose-headings:text-gray-900 
-                ${sizePresets[size].heading} prose-h1:mb-8
-                prose-p:text-gray-600 prose-p:leading-relaxed
-                prose-blockquote:border-l-4 prose-blockquote:border-gray-200 
-                prose-blockquote:pl-6 prose-blockquote:italic
-                prose-img:rounded-2xl prose-img:shadow-lg prose-img:my-8
-                prose-strong:text-gray-900`}
-            >
-              {markdown}
-            </ReactMarkdown>
+            <Suspense fallback={<div>Loading preview...</div>}>
+              <ReactMarkdown
+                className={`prose max-w-none ${sizePresets[size].prose} ${sizePresets[size].spacing}
+                  prose-headings:font-bold prose-headings:text-gray-900 
+                  ${sizePresets[size].heading} prose-h1:mb-8
+                  prose-p:text-gray-600 prose-p:leading-relaxed
+                  prose-blockquote:border-l-4 prose-blockquote:border-gray-200 
+                  prose-blockquote:pl-6 prose-blockquote:italic
+                  prose-img:rounded-2xl prose-img:shadow-lg prose-img:my-8
+                  prose-strong:text-gray-900`}
+              >
+                {markdown}
+              </ReactMarkdown>
+            </Suspense>
           </div>
         </div>
       </div>
