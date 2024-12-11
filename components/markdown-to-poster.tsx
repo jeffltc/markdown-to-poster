@@ -3,7 +3,7 @@
 import React from 'react'
 import { useState } from 'react'
 import ReactMarkdown from 'react-markdown'
-import { Download, Copy, Settings, Palette } from 'lucide-react'
+import { Download, Copy, Settings, Palette, LayoutGrid } from 'lucide-react'
 import { Button } from './ui/button'
 import CodeMirror from '@uiw/react-codemirror'
 import { markdown as markdownLang } from '@codemirror/lang-markdown'
@@ -29,7 +29,23 @@ const gradientPresets = [
   'from-yellow-300 to-red-400'
 ]
 
-const fontPresets = ['Inter', 'Roboto', 'Merriweather', 'Playfair Display']
+const sizePresets = {
+  compact: {
+    prose: 'prose-sm',
+    heading: 'prose-h1:text-3xl',
+    spacing: 'space-y-2'
+  },
+  default: {
+    prose: 'prose-base',
+    heading: 'prose-h1:text-4xl',
+    spacing: 'space-y-4'
+  },
+  comfortable: {
+    prose: 'prose-lg',
+    heading: 'prose-h1:text-5xl',
+    spacing: 'space-y-6'
+  }
+}
 
 export default function MarkdownPoster() {
   const [markdown, setMarkdown] = useState<string>(`# Markdown Poster
@@ -46,7 +62,7 @@ export default function MarkdownPoster() {
 4. WYSIWYG (What You See Is What You Get)
 5. Free`)
   const [gradient, setGradient] = useState(gradientPresets[0])
-  const [selectedFont, setSelectedFont] = useState(fontPresets[0])
+  const [size, setSize] = useState<keyof typeof sizePresets>('default')
   const [isCopying, setIsCopying] = useState(false)
   const [isDownloading, setIsDownloading] = useState(false)
 
@@ -58,6 +74,14 @@ export default function MarkdownPoster() {
         quality: 0.95,
         cacheBust: true,
         pixelRatio: 2,
+        height: preview.scrollHeight,
+        width: preview.scrollWidth,
+        style: {
+          transform: 'scale(1)',
+          transformOrigin: 'top left',
+          width: `${preview.scrollWidth}px`,
+          height: `${preview.scrollHeight}px`
+        }
       })
       const img = new Image()
       img.src = dataUrl
@@ -80,6 +104,14 @@ export default function MarkdownPoster() {
         quality: 0.95,
         cacheBust: true,
         pixelRatio: 2,
+        height: preview.scrollHeight,
+        width: preview.scrollWidth,
+        style: {
+          transform: 'scale(1)',
+          transformOrigin: 'top left',
+          width: `${preview.scrollWidth}px`,
+          height: `${preview.scrollHeight}px`
+        }
       })
       const link = document.createElement('a')
       link.download = 'markdown-poster.png'
@@ -127,15 +159,57 @@ export default function MarkdownPoster() {
                 <Palette className="h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent className="bg-white p-2 shadow-xl">
-              <div className="grid grid-cols-3 gap-2 w-[180px]">
-                {gradientPresets.map((preset) => (
+            <DropdownMenuContent className="bg-white shadow-lg">
+              <div className="p-2">
+                <h3 className="font-medium mb-2">Background</h3>
+                <div className="grid grid-cols-5 gap-1">
+                  {gradientPresets.map((preset) => (
+                    <button
+                      key={preset}
+                      onClick={() => setGradient(preset)}
+                      className={`w-8 h-8 rounded bg-gradient-to-r ${preset} hover:scale-105 transition-transform`}
+                    />
+                  ))}
+                </div>
+              </div>
+            </DropdownMenuContent>
+          </DropdownMenu>
+          
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" size="icon">
+                <LayoutGrid className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="bg-white shadow-lg">
+              <div className="p-2">
+                <h3 className="font-medium mb-2">Layout</h3>
+                <div className="space-y-1">
                   <button
-                    key={preset}
-                    onClick={() => setGradient(preset)}
-                    className={`w-14 h-14 rounded-lg bg-gradient-to-r ${preset} hover:scale-105 transition-transform`}
-                  />
-                ))}
+                    onClick={() => setSize('compact')}
+                    className={`w-full px-2 py-1 text-left rounded hover:bg-gray-100 ${
+                      size === 'compact' ? 'bg-gray-100' : ''
+                    }`}
+                  >
+                    Compact
+                  </button>
+                  <button
+                    onClick={() => setSize('default')}
+                    className={`w-full px-2 py-1 text-left rounded hover:bg-gray-100 ${
+                      size === 'default' ? 'bg-gray-100' : ''
+                    }`}
+                  >
+                    Default
+                  </button>
+                  <button
+                    onClick={() => setSize('comfortable')}
+                    className={`w-full px-2 py-1 text-left rounded hover:bg-gray-100 ${
+                      size === 'comfortable' ? 'bg-gray-100' : ''
+                    }`}
+                  >
+                    Comfortable
+                  </button>
+                </div>
               </div>
             </DropdownMenuContent>
           </DropdownMenu>
@@ -156,8 +230,8 @@ export default function MarkdownPoster() {
           </Button>
           
           <Button 
-            aria-label="复制到剪贴板"
-            title="复制到剪贴板 (Ctrl+C)"
+            aria-label="Copy to clipboard"
+            title="Copy to clipboard (Ctrl+C)"
             onClick={handleCopy}
             disabled={isCopying}
           >
@@ -170,46 +244,18 @@ export default function MarkdownPoster() {
         </div>
         <div 
           id="preview"
-          className={`w-full min-h-full rounded-lg bg-gradient-to-r ${gradient} p-8`}
+          className={`w-full h-full overflow-auto rounded-lg bg-gradient-to-r ${gradient} p-8`}
         >
-          <div className="bg-white rounded-3xl p-12 shadow-xl min-h-full">
+          <div className="bg-white rounded-3xl p-12 shadow-xl">
             <ReactMarkdown
-              className="prose prose-lg max-w-none
+              className={`prose max-w-none ${sizePresets[size].prose} ${sizePresets[size].spacing}
                 prose-headings:font-bold prose-headings:text-gray-900 
-                prose-h1:text-4xl prose-h1:mb-8
-                prose-p:text-gray-600 prose-p:text-lg prose-p:leading-relaxed
+                ${sizePresets[size].heading} prose-h1:mb-8
+                prose-p:text-gray-600 prose-p:leading-relaxed
                 prose-blockquote:border-l-4 prose-blockquote:border-gray-200 
-                prose-blockquote:pl-6 prose-blockquote:italic prose-blockquote:text-gray-600
+                prose-blockquote:pl-6 prose-blockquote:italic
                 prose-img:rounded-2xl prose-img:shadow-lg prose-img:my-8
-                prose-strong:text-gray-900
-                prose-ul:my-6 prose-li:my-2
-                prose-ol:ml-0 prose-ol:list-decimal 
-                prose-li:marker:text-gray-400
-                prose-li:leading-normal"
-              components={{
-                img: ({ node, ...props }) => (
-                  <img 
-                    loading="lazy"
-                    decoding="async"
-                    className="w-full h-auto rounded-2xl shadow-lg" 
-                    {...props} 
-                    alt={props.alt || ''} 
-                  />
-                ),
-                blockquote: ({node, ...props}) => (
-                  <div className="bg-gray-50 rounded-xl p-4 my-6">
-                    <blockquote {...props} className="border-l-4 border-gray-200 pl-4 italic text-gray-600" />
-                  </div>
-                ),
-                ol: ({node, ...props}) => (
-                  <ol {...props} className="list-decimal pl-4" />
-                ),
-                li: ({node, children, ...props}) => (
-                  <li {...props} className="text-gray-600">
-                    {children}
-                  </li>
-                )
-              }}
+                prose-strong:text-gray-900`}
             >
               {markdown}
             </ReactMarkdown>
