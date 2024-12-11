@@ -47,32 +47,46 @@ export default function MarkdownPoster() {
 5. Free`)
   const [gradient, setGradient] = useState(gradientPresets[0])
   const [selectedFont, setSelectedFont] = useState(fontPresets[0])
+  const [isCopying, setIsCopying] = useState(false)
+  const [isDownloading, setIsDownloading] = useState(false)
 
   const handleCopy = async () => {
+    setIsCopying(true)
     const preview = document.getElementById('preview')
     if (preview) {
-      const dataUrl = await toPng(preview)
+      const dataUrl = await toPng(preview, {
+        quality: 0.95,
+        cacheBust: true,
+        pixelRatio: 2,
+      })
       const img = new Image()
       img.src = dataUrl
       img.crossOrigin = 'anonymous'
       const blob = await (await fetch(dataUrl)).blob()
-      navigator.clipboard.write([
+      await navigator.clipboard.write([
         new ClipboardItem({
           'image/png': blob
         })
       ])
     }
+    setIsCopying(false)
   }
 
   const handleDownload = async () => {
+    setIsDownloading(true)
     const preview = document.getElementById('preview')
     if (preview) {
-      const dataUrl = await toPng(preview)
+      const dataUrl = await toPng(preview, {
+        quality: 0.95,
+        cacheBust: true,
+        pixelRatio: 2,
+      })
       const link = document.createElement('a')
       link.download = 'markdown-poster.png'
       link.href = dataUrl
       link.click()
     }
+    setIsDownloading(false)
   }
 
   return (
@@ -128,23 +142,37 @@ export default function MarkdownPoster() {
           
           <div className="flex-1" />
           
-          <Button variant="ghost" size="icon" onClick={handleDownload}>
-            <Download className="h-4 w-4" />
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            onClick={handleDownload}
+            disabled={isDownloading}
+          >
+            {isDownloading ? (
+              <div className="h-4 w-4 animate-spin rounded-full border-2 border-gray-300 border-t-gray-600" />
+            ) : (
+              <Download className="h-4 w-4" />
+            )}
           </Button>
           
           <Button 
             aria-label="复制到剪贴板"
             title="复制到剪贴板 (Ctrl+C)"
             onClick={handleCopy}
+            disabled={isCopying}
           >
-            <Copy className="h-4 w-4" />
+            {isCopying ? (
+              <div className="h-4 w-4 animate-spin rounded-full border-2 border-gray-300 border-t-gray-600" />
+            ) : (
+              <Copy className="h-4 w-4" />
+            )}
           </Button>
         </div>
         <div 
           id="preview"
-          className={`w-full h-full overflow-auto rounded-lg bg-gradient-to-r ${gradient} p-8`}
+          className={`w-full min-h-full rounded-lg bg-gradient-to-r ${gradient} p-8`}
         >
-          <div className="bg-white rounded-3xl p-12 shadow-xl">
+          <div className="bg-white rounded-3xl p-12 shadow-xl min-h-full">
             <ReactMarkdown
               className="prose prose-lg max-w-none
                 prose-headings:font-bold prose-headings:text-gray-900 
@@ -154,7 +182,10 @@ export default function MarkdownPoster() {
                 prose-blockquote:pl-6 prose-blockquote:italic prose-blockquote:text-gray-600
                 prose-img:rounded-2xl prose-img:shadow-lg prose-img:my-8
                 prose-strong:text-gray-900
-                prose-ul:my-6 prose-li:my-2"
+                prose-ul:my-6 prose-li:my-2
+                prose-ol:ml-0 prose-ol:list-decimal 
+                prose-li:marker:text-gray-400
+                prose-li:leading-normal"
               components={{
                 img: ({ node, ...props }) => (
                   <img 
@@ -170,6 +201,14 @@ export default function MarkdownPoster() {
                     <blockquote {...props} className="border-l-4 border-gray-200 pl-4 italic text-gray-600" />
                   </div>
                 ),
+                ol: ({node, ...props}) => (
+                  <ol {...props} className="list-decimal pl-4" />
+                ),
+                li: ({node, children, ...props}) => (
+                  <li {...props} className="text-gray-600">
+                    {children}
+                  </li>
+                )
               }}
             >
               {markdown}
